@@ -29,4 +29,8 @@ const printToDom = (strang) => {
 };
 
 
-module.exports = {domString};
+const clearDom = () => {
+	$("#movies").empty();
+};
+
+module.exports = {domString, clearDom};
