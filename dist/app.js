@@ -25,7 +25,7 @@ module.exports = {retrieveKeys};
 },{"./tmdb":5}],2:[function(require,module,exports){
 "use strict";
 
-const domString = (movieArray) => {
+const domString = (movieArray, imgConfig) => {
 	let domStrang = "";
 	for (let i=0; i<movieArray.length; i++) {
 		if (i % 3 === 0) {
@@ -33,7 +33,7 @@ const domString = (movieArray) => {
 		}
 		domStrang +=			`<div class="col-sm-6 col-md-4">`;
 		domStrang +=				`<div class="thumbnail">`;
-		domStrang +=					`<img src="" alt="">`;
+		domStrang +=					`<img src="${imgConfig.base_url}/w342/${movieArray[i].poster_path}" alt="">`;
 		domStrang +=					`<div class="caption">`;
 		domStrang +=						`<h3>${movieArray[i].original_title}</h3>`;
 		domStrang +=						`<p>${movieArray[i].overview}</p>`;
@@ -89,6 +89,7 @@ events.pressEnter();
 "use strict";
 
 let tmdbKey;
+let imgConfig;
 const dom = require("./dom");
 
 const searchTMDB = (query) => {
@@ -98,6 +99,25 @@ const searchTMDB = (query) => {
 		}).fail((error) => {
 			reject(error);
 		});
+	});
+};
+
+const tmdbConfiguration = () => {
+	return new Promise((resolve, reject) => {
+		$.ajax(`https://api.themoviedb.org/3/configuration?api_key=${tmdbKey}`).done((data) => {
+			resolve(data.images);
+		}).fail((error) => {
+			reject(error);
+		});
+	});
+};
+
+const getConfig = () => {
+	tmdbConfiguration().then((results) => {
+		imgConfig = results;
+		console.log("img info", imgConfig);
+	}).catch((error) => {
+		console.log("error in getConfig", error);
 	});
 };
 
@@ -111,11 +131,12 @@ const searchMovies = (query) => {
 
 const setKeys = (apiKey) => {
 	tmdbKey = apiKey;
+	getConfig();
 };
 
 const showResults = (movieArray) => {
 	dom.clearDom();
-	dom.domString(movieArray);
+	dom.domString(movieArray, imgConfig);
 };
 
 module.exports = {setKeys, searchMovies};
