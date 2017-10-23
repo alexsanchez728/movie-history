@@ -76,7 +76,29 @@ const pressEnter = () => {
 
 };
 
-module.exports = {pressEnter};
+
+// Add function: myLinks - click events that checks the id of event.target and:
+const myLinks = () => {
+	$(document).click((e) => {
+		if (e.target.id === "navSearch") {
+			$("#search").removeClass("hide");
+			$("#myMovies").addClass("hide");
+			$("#authScreen").addClass("hide");
+		} else if (e.target.id === "mine") {
+			$("#search").addClass("hide");
+			$("#myMovies").removeClass("hide");
+			$("#authScreen").addClass("hide");
+		} else if (e.target.id === "authenticate") {
+			$("#search").addClass("hide");
+			$("#myMovies").addClass("hide");
+			$("#authScreen").removeClass("hide");
+		}
+
+	});
+
+};
+
+module.exports = {pressEnter, myLinks};
 },{"./tmdb":5}],4:[function(require,module,exports){
 "use strict";
 
@@ -84,6 +106,7 @@ let events = require("./events");
 let apiKeys = require("./apiKeys");
 
 apiKeys.retrieveKeys();
+events.myLinks();
 events.pressEnter();
 },{"./apiKeys":1,"./events":3}],5:[function(require,module,exports){
 "use strict";
