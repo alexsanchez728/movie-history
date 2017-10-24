@@ -38,7 +38,7 @@ const domString = (movieArray, imgConfig, divName) => {
 		domStrang +=				`<div class="thumbnail">`;
 		domStrang +=					`<img src="${imgConfig.base_url}/w342/${movieArray[i].poster_path}" alt="">`;
 		domStrang +=					`<div class="caption">`;
-		domStrang +=						`<h3>${movieArray[i].original_title}</h3>`;
+		domStrang +=						`<h3>${movieArray[i].title}</h3>`;
 		domStrang +=						`<p>${movieArray[i].overview}</p>`;
 		domStrang +=						`<p><a href="#" class="btn btn-primary" role="button">Review</a> <a href="#" class="btn btn-default" role="button">Watchlist</a></p>`;
 		domStrang +=					`</div>`;
@@ -66,6 +66,7 @@ module.exports = {domString, clearDom};
 "use strict";
 
 const tmdb = require("./tmdb");
+const dom = require("./dom");
 const firebaseApi = require("./firebaseApi");
 
 const pressEnter = () => {
@@ -87,6 +88,12 @@ const myLinks = () => {
 			$("#myMovies").addClass("hide");
 			$("#authScreen").addClass("hide");
 		} else if (e.target.id === "mine") {
+			firebaseApi.getMovieList().then((results) => {
+				dom.clearDom('moviesMine');
+				dom.domString(results, tmdb.getImgConfig(), 'moviesMine');
+			}).catch((err) => {
+				console.log("error in getMovieList", err);
+			});
 			$("#search").addClass("hide");
 			$("#myMovies").removeClass("hide");
 			$("#authScreen").addClass("hide");
@@ -110,7 +117,7 @@ const googleAuth = () => {
 
 
 module.exports = {pressEnter, myLinks, googleAuth};
-},{"./firebaseApi":4,"./tmdb":6}],4:[function(require,module,exports){
+},{"./dom":2,"./firebaseApi":4,"./tmdb":6}],4:[function(require,module,exports){
 "use strict";
 
 let firebaseKey = "";
@@ -134,7 +141,25 @@ let authenticateGoogle = () => {
   });
 };
 
-module.exports = {setKey, authenticateGoogle};
+const getMovieList = () => {
+  let movies = [];
+  return new Promise((resolve, reject) => {
+    $.ajax(`${firebaseKey.databaseURL}/movies.json?orderBy="uid"&equalTo="${userUid}"`).then((fbMovies) => {
+      if (fbMovies != null){
+        Object.keys(fbMovies).forEach((key) => {
+          fbMovies[key].id = key;
+          movies.push(fbMovies[key]);
+        });
+      }
+      resolve(movies);
+    }).catch((err) => {
+      reject(err);
+    });
+  });
+};
+
+
+module.exports = {setKey, authenticateGoogle, getMovieList};
 },{}],5:[function(require,module,exports){
 "use strict";
 
@@ -198,5 +223,9 @@ const showResults = (movieArray) => {
 	dom.domString(movieArray, imgConfig, 'movies');
 };
 
-module.exports = {setKeys, searchMovies};
+const getImgConfig = () => {
+	return imgConfig;
+};
+
+module.exports = {setKeys, searchMovies, getImgConfig};
 },{"./dom":2}]},{},[5]);

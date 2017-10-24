@@ -50,4 +50,8 @@ const showResults = (movieArray) => {
 	dom.domString(movieArray, imgConfig, 'movies');
 };
 
-module.exports = {setKeys, searchMovies};
+const getImgConfig = () => {
+	return imgConfig;
+};
+
+module.exports = {setKeys, searchMovies, getImgConfig};
