@@ -28,7 +28,7 @@ module.exports = {retrieveKeys};
 },{"./firebaseApi":4,"./tmdb":6}],2:[function(require,module,exports){
 "use strict";
 
-const domString = (movieArray, imgConfig) => {
+const domString = (movieArray, imgConfig, divName) => {
 	let domStrang = "";
 	for (let i=0; i<movieArray.length; i++) {
 		if (i % 3 === 0) {
@@ -49,16 +49,16 @@ const domString = (movieArray, imgConfig) => {
 		}
 	}
 
-	printToDom(domStrang);
+	printToDom(domStrang, divName);
 };
 
-const printToDom = (strang) => {
-	$("#movies").append(strang);
+const printToDom = (strang, divName) => {
+	$(`#${divName}`).append(strang);
 };
 
 
-const clearDom = () => {
-	$("#movies").empty();
+const clearDom = (divName) => {
+	$(`#${divName}`).empty();
 };
 
 module.exports = {domString, clearDom};
@@ -194,8 +194,8 @@ const setKeys = (apiKey) => {
 };
 
 const showResults = (movieArray) => {
-	dom.clearDom();
-	dom.domString(movieArray, imgConfig);
+	dom.clearDom('movies');
+	dom.domString(movieArray, imgConfig, 'movies');
 };
 
 module.exports = {setKeys, searchMovies};
