@@ -1,6 +1,7 @@
 "use strict";
 
 const tmdb = require("./tmdb");
+const firebaseApi = require("./firebaseApi");
 
 const pressEnter = () => {
 	$(document).keypress((event) => {
@@ -10,8 +11,6 @@ const pressEnter = () => {
 			tmdb.searchMovies(query);
 		} 
 	});
-
-
 };
 
 
@@ -31,9 +30,18 @@ const myLinks = () => {
 			$("#myMovies").addClass("hide");
 			$("#authScreen").removeClass("hide");
 		}
-
 	});
-
 };
 
-module.exports = {pressEnter, myLinks};
+const googleAuth = () => {
+	$("#googleButton").click((event) => {
+		firebaseApi.authenticateGoogle().then((result) => {
+			console.log("result", result);
+		}).catch((err) => {
+			console.log("error in authenticateGoogle", err);
+		});
+	});
+};
+
+
+module.exports = {pressEnter, myLinks, googleAuth};
