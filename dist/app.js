@@ -96,6 +96,16 @@ const pressEnter = () => {
 };
 
 
+
+const getTheMovies = () => {
+			firebaseApi.getMovieList().then((results) => {
+				dom.clearDom('moviesMine');
+				dom.domString(results, tmdb.getImgConfig(), 'moviesMine', false);
+			}).catch((err) => {
+				console.log("error in getMovieList", err);
+			});
+};
+
 // Add function: myLinks - click events that checks the id of event.target and:
 const myLinks = () => {
 	$(document).click((e) => {
@@ -104,12 +114,7 @@ const myLinks = () => {
 			$("#myMovies").addClass("hide");
 			$("#authScreen").addClass("hide");
 		} else if (e.target.id === "mine") {
-			firebaseApi.getMovieList().then((results) => {
-				dom.clearDom('moviesMine');
-				dom.domString(results, tmdb.getImgConfig(), 'moviesMine', false);
-			}).catch((err) => {
-				console.log("error in getMovieList", err);
-			});
+			getTheMovies();
 			$("#search").addClass("hide");
 			$("#myMovies").removeClass("hide");
 			$("#authScreen").addClass("hide");
@@ -180,8 +185,8 @@ const deleteMovie = () => {
 	$("body").on("click", ".delete", (e) => {
 		let movieId = $(e.target).data("firebase-id");
 
-		firebaseApi.deleteMovie(movieId).then((results) => {
-			console.log("results", results);
+		firebaseApi.deleteMovie(movieId).then(() => {
+			getTheMovies();
 		}).catch((err) => {
 			console.log("error in delete movie", err);
 		});
