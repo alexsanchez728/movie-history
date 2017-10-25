@@ -10,7 +10,7 @@ const domString = (movieArray, imgConfig, divName, search) => {
 		domStrang +=				`<div class="thumbnail">`;
 
 		if (!search) {
-			domStrang +=				`<button class="btn btn-default" data-firebase-id="${movieArray[i].id}">X</button>`;
+			domStrang +=				`<button class="btn btn-default delete" data-firebase-id="${movieArray[i].id}">X</button>`;
 		}
 
 		domStrang +=					`<img class="poster_path" src="${imgConfig.base_url}/w342/${movieArray[i].poster_path}" alt="">`;
